@@ -13,7 +13,7 @@
 # 
 # #### Project Los Angeles
 # 
-# #### Tegridy Code 2021
+# #### Tegridy Code 2022
 # 
 # ***
 
@@ -293,32 +293,44 @@ print('=' * 70)
 
 idx = -1
 
-while idx == -1:
+idx_list = [-1]
+
+while idx in idx_list:
 
     s = secrets.randbelow(len(INTS))
     print(s)
-    d = 8
+    d = 10
     nt = 150
-
-    idx = HaystackSearch(INTS[s:s+d], INTS[s+d+1:])
-  
+    idx_list.append(s)
+    idx = HaystackSearch(INTS[s:s+d], INTS)
+    
     print(idx)
+    
+idx_list.append(idx)
 
-out = INTS[s-nt:s+d] + INTS[s+d+idx:s+d+idx+nt]
+out = INTS[s-nt:s+d] + INTS[d+idx:d+idx+nt]
 
 print('=' * 70)
 
-for i in range(3):
-    d = 8
-    idx1 = -1
-    while idx1 == -1:
-        idx1 = HaystackSearch(out[-d:], INTS[idx+nt:])
-        print('idx1:', idx1)
-        d -= 1
-    out += INTS[idx1:idx1+nt]
-    idx = idx1
+d = -1
+s = 12
 
-    
+for i in range(50):
+
+    idx1 = HaystackSearch(out[d-s:d], INTS[secrets.randbelow(len(INTS)):])
+
+    if idx1 not in idx_list:
+        print('idx1:', idx1)
+        out += INTS[idx1:idx1+nt]
+        idx_list += range(idx1, idx1+nt)
+        idx = idx1
+        d = -1
+        
+    else:
+        d -= s
+        print(s, d)
+        if d < -(s * 5):
+            break
 print('=' * 70)
     
     
@@ -410,8 +422,6 @@ print('Done!')
 
 ## WIP. Options will be added and explained in the next update
 
-### Sometimes it gets stuck on the same continuation so for now just try to reload the MIDI above and it should get unstuck. Sorry...
-
 print('=' * 70)
 print('Matchmaker Music Continuation Generator')
 print('=' * 70)
@@ -420,17 +430,18 @@ d = 3
 
 
 idx = -1
+x = len(inputs1)
 while idx == -1:
-    x = 100
+    
     rnd = secrets.randbelow(len(INTS))
-    idx = HaystackSearch(inputs1[:x][-d:], INTS[rnd:])
+    idx = HaystackSearch(inputs1[:x][-d:], INTS)
     print(idx)
-    x -= 1
+    x -= d
     
 print('=' * 70)
     
 song_f = []
-out = copy.deepcopy(inputs1[:x]) + copy.deepcopy(INTS[rnd+idx:rnd+idx+x])
+out = copy.deepcopy(inputs1[:x]) + copy.deepcopy(INTS[idx:idx+x])
 if len(out) != 0:
   song = []
   song = out
@@ -440,7 +451,7 @@ if len(out) != 0:
   vel = 0
   pitch = 0
   duration = 0
-  count = 0
+  count = 1
   for s in song:
       if s < 128:
         time += s
@@ -452,7 +463,7 @@ if len(out) != 0:
         
         song_f.append(['note', (abs(time))*10, 250, channel, pitch, pitch ])
         
-        if count % x == 0:
+        if count % len(inputs1) == 0:
             song_f.append(['text_event', abs(time) * 10, 'Continuation Start Here'])
         count += 1
         
