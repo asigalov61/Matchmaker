@@ -136,7 +136,7 @@ else:
 
 v = 1
 print('Processing MIDI files. Please wait...')
-for f in tqdm(filez[37000:]):
+for f in tqdm(filez):
   try:
     fn = os.path.basename(f)
     fn1 = fn.split('.')[0]
