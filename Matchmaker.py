@@ -43,8 +43,6 @@ import copy
 import tqdm
 from tqdm import tqdm
 
-import re
-
 os.chdir('/notebooks/tegridy-tools/tegridy-tools')
 
 print('Loading TMIDIX module...')
@@ -313,16 +311,16 @@ out = INTS[s-nt:s+d] + INTS[d+idx:d+idx+nt]
 print('=' * 70)
 
 d = -1
-s = 12
+s = 10
 
-for i in range(50):
+for i in range(5):
+    rnd = secrets.randbelow(len(INTS))
+    idx1 = HaystackSearch(out[d-s:d], INTS[rnd:])
 
-    idx1 = HaystackSearch(out[d-s:d], INTS[secrets.randbelow(len(INTS)):])
-
-    if idx1 not in idx_list:
+    if idx1 != -1 and idx1+rnd not in idx_list:
         print('idx1:', idx1)
-        out += INTS[idx1:idx1+nt]
-        idx_list += range(idx1, idx1+nt)
+        out += INTS[idx1+rnd:idx1+rnd+nt]
+        idx_list += range(idx1+rnd, idx1+rnd+nt)
         idx = idx1
         d = -1
         
@@ -331,6 +329,7 @@ for i in range(50):
         print(s, d)
         if d < -(s * 5):
             break
+            
 print('=' * 70)
     
     
@@ -441,7 +440,7 @@ while idx == -1:
 print('=' * 70)
     
 song_f = []
-out = copy.deepcopy(inputs1[:x]) + copy.deepcopy(INTS[idx:idx+x])
+out = inputs1[:x] + INTS[idx:idx+x]
 if len(out) != 0:
   song = []
   song = out
